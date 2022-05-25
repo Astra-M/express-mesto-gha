@@ -28,7 +28,7 @@ const deleteCard = (req, res) => {
       if (!card) {
         return res.status(404).send({ message: 'Card not found' });
       }
-      return res.status(200).send('Card has been deleted');
+      return res.status(200).send({ message: 'Card has been deleted' });
     })
     .catch((err) => {
       if (err.kind === 'ObjectId') {
