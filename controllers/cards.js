@@ -30,7 +30,12 @@ const deleteCard = (req, res) => {
       }
       return res.status(200).send('Card has been deleted');
     })
-    .catch(() => res.status(500).send({ message: 'Server error' }));
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        return res.status(400).send({ message: 'Id is not correct' });
+      }
+      res.status(500).send({ message: 'Server error' });
+    });
 };
 
 const likeCard = (req, res) => {

@@ -39,7 +39,7 @@ const createUser = (req, res) => {
 
 const updateUserProfile = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
         return res.status(404).send({ message: 'User not found' });
@@ -47,8 +47,9 @@ const updateUserProfile = (req, res) => {
       return res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Data is not correct' });
+      if (err.name === 'ValidationError') {
+        const fields = Object.keys(err.errors).join(', ');
+        return res.status(400).send({ message: `${fields} not correct` });
       }
       return res.status(500).send({ message: 'Server error' });
     });
