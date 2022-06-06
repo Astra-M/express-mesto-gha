@@ -1,74 +1,130 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const { generateToken } = require('../middlewares/auth');
 
-const getUsers = (req, res) => {
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+  User.findOne({ email }).select('+password')
+    .then((user) => {
+      if (!user) {
+        const err = new Error('Email or password are not correct');
+        err.statusCode = 400;
+        throw err;
+      }
+      const isPasswordValid = bcrypt.compare(password, user.password);
+      return Promise.all([isPasswordValid, user]);
+    })
+    .then(([isPasswordValid, user]) => {
+      if (!isPasswordValid) {
+        const err = new Error('Email or password are not correct');
+        err.statusCode = 401;
+        throw err;
+      }
+      return generateToken({ id: user._id });
+    })
+    .then((token) => res.status(200).send({ token }))
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       res.status(200).send(users);
     })
-    .catch(() => res.status(500).send({ message: 'Server error' }));
+    .catch((err) => {
+      next(err);
+    });
 };
 
-const getUser = (req, res) => {
+const getUserProfile = (req, res, next) => {
+  User.findById(req.user.id)
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const getUser = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'User not found' });
+        const err = new Error('User not found');
+        err.statusCode = 404;
+        throw err;
       }
       return res.status(200).send(user);
     })
     .catch((err) => {
       if (err.kind === 'ObjectId') {
-        return res.status(400).send({ message: 'Id is not correct' });
+        const error = new Error('Id is not correct');
+        error.statusCode = 400;
+        return next(error);
       }
-      return res.status(500).send({ message: 'Server error' });
+      next(err);
     });
 };
 
-const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
-    .then((user) => res.status(201).send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        const fields = Object.keys(err.errors).join(', ');
-        return res.status(400).send({ message: `${fields} not correct` });
-      }
-      return res.status(500).send({ message: 'Server error' });
+const createUser = (req, res, next) => {
+  const {
+    name, about, avatar, email, password
+  } = req.body;
+  if (!email || !password) {
+    const err = new Error('Email and password are required');
+    err.statusCode = 400;
+    throw err;
+  }
+  bcrypt.hash(password, 10)
+    .then((hash) => {
+      User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      })
+        .then((user) => res.status(201).send({ user }))
+        .catch((e) => {
+          if (e.code === 11000) {
+            const duplicateError = new Error('This email already exists');
+            duplicateError.statusCode = 409;
+            return next(duplicateError);
+          }
+          next(e);
+        });
     });
 };
 
-const updateUserProfile = (req, res) => {
+const updateUserProfile = (req, res, next) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(req.user.id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'User not found' });
+        const err = new Error('User not found');
+        err.statusCode = 404;
+        throw err;
       }
       return res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        const fields = Object.keys(err.errors).join(', ');
-        return res.status(400).send({ message: `${fields} not correct` });
-      }
-      return res.status(500).send({ message: 'Server error' });
+      next(err);
     });
 };
 
-const updateUserAvatar = (req, res) => {
+const updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
+  User.findByIdAndUpdate(req.user.id, { avatar }, { new: true })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'User not found' });
+        const err = new Error('User not found');
+        err.statusCode = 404;
+        throw err;
       }
       return res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Data is not correct' });
-      }
-      return res.status(500).send({ message: 'Server error' });
+      next(err);
     });
 };
 
@@ -78,4 +134,6 @@ module.exports = {
   createUser,
   updateUserProfile,
   updateUserAvatar,
+  login,
+  getUserProfile,
 };
