@@ -84,7 +84,9 @@ const createUser = (req, res, next) => {
         email,
         password: hash,
       })
-        .then((user) => res.status(201).send({ user }))
+        .then((user) => {
+          return res.status(201).send({ user })
+        })
         .catch((e) => {
           if (e.code === 11000) {
             const duplicateError = new Error('This email already exists');
