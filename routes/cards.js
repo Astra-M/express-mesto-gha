@@ -13,12 +13,12 @@ cardRouter.delete('/:cardId', celebrate({
 }), deleteCard);
 
 cardRouter.post('/',
-// celebrate({
-//   body: Joi.object().keys({
-//     name: Joi.string().required().min(2).max(30),
-//     link: Joi.string().required().pattern(/https?:\/\/(w{3}\.)?(\d+-)?([A-z0-9]+)(-[A-z]+){0,3}\.([A-z]{2,})\/?([A-z0-9\-._~:?#[\]@!$&'()*+,;=]+\/){1,3}#?/),
-//   }),
-// }),
+celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string().required().pattern(/https?:\/\/(w{3}\.)?(\d+-)?([A-z0-9]+)(-[A-z]+){0,3}\.([A-z]{2,})\/?([A-z0-9\-._~:?#[\]@!$&'()*+,;=]+\/){1,3}#?/),
+  }),
+}),
 createCard);
 
 cardRouter.put('/:cardId/likes', celebrate({
