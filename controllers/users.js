@@ -46,7 +46,15 @@ const getUserProfile = (req, res, next) => {
       next(err);
     });
 };
+// const userIdValidation = (value, helpers) => {
+//   // Throw an error (will be replaced with 'any.custom' error)
+//   if (value === '1') {
+//       throw new Error('nope');
+//   }
+// }
+
 const getUser = (req, res, next) => {
+  // console.log("req=>", req)
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
@@ -65,11 +73,11 @@ const getUser = (req, res, next) => {
     })
     .catch((err) => {
       //должен валидировать джой
-      if (err.kind === 'ObjectId') {
-        const error = new Error('Id is not correct');
-        error.statusCode = 400;
-        return next(error);
-      }
+      // if (err.kind === 'ObjectId') {
+      //   const error = new Error('Id is not correct');
+      //   error.statusCode = 400;
+      //   return next(error);
+      // }
       // next(err);
       return next(err);
     });
