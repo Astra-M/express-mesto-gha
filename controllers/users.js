@@ -69,17 +69,16 @@ const getUser = (req, res, next) => {
       res.send({
         name, email, about, avatar, _id, __v,
       });
-      // return res.status(200).send(user);
     })
     .catch((err) => {
-      //должен валидировать джой
+      // должен валидировать джой
       // if (err.kind === 'ObjectId') {
       //   const error = new Error('Id is not correct');
       //   error.statusCode = 400;
       //   return next(error);
       // }
       // next(err);
-      return next(err);
+      next(err);
     });
 };
 
@@ -109,15 +108,15 @@ const createUser = (req, res, next) => {
         email: userEmail,
         password: hash,
       })
-  // bcrypt.hash(password, 10)
-  //   .then((hash) => {
-  //     User.create({
-  //       name,
-  //       about,
-  //       avatar,
-  //       email,
-  //       password: hash,
-  //     })
+// bcrypt.hash(password, 10)
+//   .then((hash) => {
+//     User.create({
+//       name,
+//       about,
+//       avatar,
+//       email,
+//       password: hash,
+//     })
         // .then((user) => {
         //   return res.status(201).send(user);
         // })

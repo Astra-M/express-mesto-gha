@@ -32,7 +32,13 @@ app.post('/signup', celebrate({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(/(https?:\/\/)(w{3}\.)?(\d+-)?([A-z0-9]+)(-[A-z]+){0,3}\.([A-z]{2,})(\/[A-z0-9\-\.\/_~:?#\[\]@!$&'\(\)*\+,;=]+\/#?){0,3}/),
-    // avatar: Joi.string().required().pattern(/(https?:\/\/)(w{3}\.)?(\d+-)?([A-z0-9]+)(-[A-z]+){0,3}\.([A-z]{2,})(\/[A-z0-9\-.\/_~:?#[\]@!$&'()*+,;=]+\/#?){0,3}/),
+    // avatar: Joi.string().required()
+    // .pattern
+    // (/(https?:\/\/)
+    // (w{3}\.)?
+    // (\d+-)?([A-z0-9]+)
+    // (-[A-z]+){0,3}\.
+    // ([A-z]{2,})(\/[A-z0-9\-.\/_~:?#[\]@!$&'()*+,;=]+\/#?){0,3}/),
 
     email: Joi.string().required().email(),
     password: Joi.string().required().min(3).max(30),
@@ -43,9 +49,12 @@ app.use((err, req, res, next) => {
   if (err.statusCode) {
     return res.status(err.statusCode).send({ message: err.message || 'Something went wrong' });
   }
-  return res.status(500).send({ message: 'Server error' });
+  // return res.status(500).send({ message: 'Server error' });
+  res.status(500).send({ message: 'Server error' });
+  return next(err);
 });
 
 app.use((req, res, next) => {
   res.status(404).send({ message: 'Error 404: there is no such page' });
+  next();
 });

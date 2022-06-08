@@ -1,9 +1,7 @@
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 
-const generateToken = (payload) => {
-  return jwt.sign(payload, 'some-secret-key', { expiresIn: '7d' });
-};
+const generateToken = (payload) => jwt.sign(payload, 'some-secret-key', { expiresIn: '7d' });
 
 const isAuthorized = (req, res, next) => {
   const auth = req.headers.authorization;
@@ -22,7 +20,7 @@ const isAuthorized = (req, res, next) => {
     return next(err);
   }
   req.user = payload;
-  next();
+  return next();
 };
 
 const validateUserEmail = (req, res, next) => {

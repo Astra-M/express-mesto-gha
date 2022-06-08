@@ -18,8 +18,15 @@ const getCards = (req, res, next) => {
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user.id;
+  console.log('name=>', name)
+  console.log('link=>', link)
+  console.log('owner=>', owner)
   Card.create({ name, link, owner })
-    .then((card) => res.status(201).send(card))
+    // .then((card) => res.status(201).send(card))
+    .then((card) => {
+      console.log('card=>', card)
+      return res.status(201).send(card)
+    })
     .catch((err) => {
       next(err);
     });
@@ -41,9 +48,10 @@ const deleteCard = (req, res, next) => {
         throw err;
       }
       Card.findByIdAndRemove(req.params.cardId)
-        .then(() => {
-          return res.status(200).send({ message: 'Card has been deleted' });
-        });
+        // .then(() => {
+        //   return res.status(200).send({ message: 'Card has been deleted' });
+        // });
+        .then(() => res.status(200).send({ message: 'Card has been deleted' }));
     })
     .catch((err) => {
       // if (err.kind === 'ObjectId') {
