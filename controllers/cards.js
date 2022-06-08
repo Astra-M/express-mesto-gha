@@ -3,6 +3,12 @@ const Card = require('../models/card');
 const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
+      //проверка списка карточек
+      if (!cards) {
+        const err = new Error('Cards not found');
+        err.statusCode = 404;
+        throw err;
+      }
       res.status(200).send(cards);
     })
     .catch((err) => {
@@ -30,8 +36,9 @@ const deleteCard = (req, res, next) => {
       }
       const cardOwner = card.owner.toString();
       if (cardOwner !== req.user.id) {
-        const err = new Error('Authorization error: you are not allowed to delete another users cards');
-        err.statusCode = 401;
+        const err = new Error('You are not allowed to delete another users cards');
+        // err.statusCode = 401;
+        err.statusCode = 403;
         throw err;
       }
       Card.findByIdAndRemove(req.params.cardId)

@@ -5,7 +5,12 @@ const {
 } = require('../controllers/cards');
 
 cardRouter.get('/', getCards);
-cardRouter.delete('/:cardId', deleteCard);
+
+cardRouter.delete('/:cardId', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+}), deleteCard);
 
 cardRouter.post('/', celebrate({
   body: Joi.object().keys({
