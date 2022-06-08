@@ -3,7 +3,6 @@ const Card = require('../models/card');
 const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
-      //проверка списка карточек
       if (!cards) {
         const err = new Error('Cards not found');
         err.statusCode = 404;
@@ -47,11 +46,11 @@ const deleteCard = (req, res, next) => {
         });
     })
     .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        const error = new Error('Id is not correct');
-        error.statusCode = 400;
-        return next(error);
-      }
+      // if (err.kind === 'ObjectId') {
+      //   const error = new Error('Id is not correct');
+      //   error.statusCode = 400;
+      //   return next(error);
+      // }
       next(err);
     });
 };
