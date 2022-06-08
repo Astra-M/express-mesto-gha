@@ -54,46 +54,85 @@ const getUser = (req, res, next) => {
         err.statusCode = 404;
         throw err;
       }
-      return res.status(200).send(user);
+      const {
+        _id, __v, name, email, about, avatar,
+      } = user;
+      res.status(200);
+      res.send({
+        name, email, about, avatar, _id, __v,
+      });
+      // return res.status(200).send(user);
     })
     .catch((err) => {
+      //должен валидировать джой
       if (err.kind === 'ObjectId') {
         const error = new Error('Id is not correct');
         error.statusCode = 400;
         return next(error);
       }
-      next(err);
+      // next(err);
+      return next(err);
     });
 };
 
 const createUser = (req, res, next) => {
+  // const {
+  //   name, about, avatar, email, password,
+  // } = req.body;
   const {
-    name, about, avatar, email, password
+    name: username,
+    about: userProf,
+    avatar: userAvatar,
+    email: userEmail,
+    password: userPassword,
   } = req.body;
-  if (!email || !password) {
+  // if (!email || !password) {
+  if (!userEmail || !userPassword) {
     const err = new Error('Email and password are required');
     err.statusCode = 400;
     throw err;
   }
-  bcrypt.hash(password, 10)
+  bcrypt.hash(userPassword, 10)
     .then((hash) => {
       User.create({
-        name,
-        about,
-        avatar,
-        email,
+        name: username,
+        about: userProf,
+        avatar: userAvatar,
+        email: userEmail,
         password: hash,
       })
+  // bcrypt.hash(password, 10)
+  //   .then((hash) => {
+  //     User.create({
+  //       name,
+  //       about,
+  //       avatar,
+  //       email,
+  //       password: hash,
+  //     })
+        // .then((user) => {
+        //   return res.status(201).send(user);
+        // })
+        // .then(() => { throw new Error() })
+        // .then((user) => res.status(201).send(user))
         .then((user) => {
-          return res.status(201).send({ user })
+          // const { name, email, about, avatar, _id, __v } = user;
+          const {
+            _id, __v, name, email, about, avatar,
+          } = user;
+          res.status(201);
+          res.send({
+            name, email, about, avatar, _id, __v,
+          });
         })
+
         .catch((e) => {
           if (e.code === 11000) {
             const duplicateError = new Error('This email already exists');
             duplicateError.statusCode = 409;
             return next(duplicateError);
           }
-          next(e);
+          return next(e);
         });
     });
 };
