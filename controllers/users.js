@@ -8,7 +8,8 @@ const login = (req, res, next) => {
     .then((user) => {
       if (!user) {
         const err = new Error('Email or password are not correct');
-        err.statusCode = 400;
+        // err.statusCode = 400;
+        err.statusCode = 401;
         throw err;
       }
       const isPasswordValid = bcrypt.compare(password, user.password);
@@ -45,7 +46,6 @@ const getUserProfile = (req, res, next) => {
       next(err);
     });
 };
-
 const getUser = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
