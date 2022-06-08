@@ -6,14 +6,26 @@ const {
 
 cardRouter.get('/', getCards);
 cardRouter.delete('/:cardId', deleteCard);
+
 cardRouter.post('/', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    link: Joi.string().pattern(/https?:\/\/(w{3}\.)?(\d+-)?([A-z0-9]+)(-[A-z]+){0,3}\.([A-z]{2,})\/?([A-z0-9\-._~:?#[\]@!$&'()*+,;=]+\/){1,3}#?/),
+    name: Joi.string().required().min(2).max(30),
+    link: Joi.string().required().pattern(/https?:\/\/(w{3}\.)?(\d+-)?([A-z0-9]+)(-[A-z]+){0,3}\.([A-z]{2,})\/?([A-z0-9\-._~:?#[\]@!$&'()*+,;=]+\/){1,3}#?/),
   }),
 }), createCard);
 
-cardRouter.put('/:cardId/likes', likeCard);
-cardRouter.delete('/:cardId/likes', dislikeCard);
+cardRouter.put('/:cardId/likes', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+}), likeCard);
+
+cardRouter.put('/:cardId/likes', celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+}), dislikeCard);
+
+// cardRouter.delete('/:cardId/likes', dislikeCard);
 
 module.exports = { cardRouter };

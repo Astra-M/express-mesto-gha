@@ -14,7 +14,7 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user.id;
   Card.create({ name, link, owner })
-    .then((user) => res.status(201).send(user))
+    .then((card) => res.status(201).send(card))
     .catch((err) => {
       next(err);
     });
@@ -64,11 +64,11 @@ const likeCard = (req, res, next) => {
       return res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        const error = new Error('Id is not correct');
-        error.statusCode = 400;
-        return next(error);
-      }
+      // if (err.kind === 'ObjectId') {
+      //   const error = new Error('Id is not correct');
+      //   error.statusCode = 400;
+      //   return next(error);
+      // }
       next(err);
     });
 };
@@ -88,11 +88,11 @@ const dislikeCard = (req, res, next) => {
       return res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        const error = new Error('Id is not correct');
-        error.statusCode = 400;
-        return next(error);
-      }
+      // if (err.kind === 'ObjectId') {
+      //   const error = new Error('Id is not correct');
+      //   error.statusCode = 400;
+      //   return next(error);
+      // }
       next(err);
     });
 };
