@@ -1,4 +1,3 @@
-const validator = require('validator');
 const jwt = require('jsonwebtoken');
 
 const generateToken = (payload) => jwt.sign(payload, 'some-secret-key', { expiresIn: '7d' });
@@ -23,13 +22,4 @@ const isAuthorized = (req, res, next) => {
   return next();
 };
 
-const validateUserEmail = (req, res, next) => {
-  const { email } = req.body;
-  if (validator.isEmail(email)) {
-    return next();
-  }
-  const err = new Error('Email is not correct');
-  err.statusCode = 400;
-  return next(err);
-};
-module.exports = { generateToken, validateUserEmail, isAuthorized };
+module.exports = { generateToken, isAuthorized };

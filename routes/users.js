@@ -31,4 +31,3 @@ userRouter.patch('/me/avatar', celebrate({
 }), updateUserAvatar);
 
 module.exports = { userRouter };
-// avatar: Joi.string().pattern(/(https?:\/\/)(w{3}\.)?(\d+-)?([A-z0-9]+)(-[A-z]+){0,3}\.([A-z]{2,})(\/[A-z0-9\-\.\/_~:?#\[\]@!$&'\(\)*\+,;=]+\/#?){0,3}/)

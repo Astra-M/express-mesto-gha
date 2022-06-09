@@ -18,15 +18,8 @@ const getCards = (req, res, next) => {
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user.id;
-  // console.log('name=>', name)
-  // console.log('link=>', link)
-  // console.log('owner=>', owner)
   Card.create({ name, link, owner })
     .then((card) => res.status(201).send(card))
-    // .then((card) => {
-    //   // console.log('card=>', card)
-    //   return res.status(201).send(card)
-    // })
     .catch((err) => {
       next(err);
     });
@@ -43,22 +36,13 @@ const deleteCard = (req, res, next) => {
       const cardOwner = card.owner.toString();
       if (cardOwner !== req.user.id) {
         const err = new Error('You are not allowed to delete another users cards');
-        // err.statusCode = 401;
         err.statusCode = 403;
         throw err;
       }
       Card.findByIdAndRemove(req.params.cardId)
-        // .then(() => {
-        //   return res.status(200).send({ message: 'Card has been deleted' });
-        // });
         .then(() => res.status(200).send({ message: 'Card has been deleted' }));
     })
     .catch((err) => {
-      // if (err.kind === 'ObjectId') {
-      //   const error = new Error('Id is not correct');
-      //   error.statusCode = 400;
-      //   return next(error);
-      // }
       next(err);
     });
 };
@@ -78,11 +62,6 @@ const likeCard = (req, res, next) => {
       return res.status(200).send(card);
     })
     .catch((err) => {
-      // if (err.kind === 'ObjectId') {
-      //   const error = new Error('Id is not correct');
-      //   error.statusCode = 400;
-      //   return next(error);
-      // }
       next(err);
     });
 };
@@ -102,11 +81,6 @@ const dislikeCard = (req, res, next) => {
       return res.status(200).send(card);
     })
     .catch((err) => {
-      // if (err.kind === 'ObjectId') {
-      //   const error = new Error('Id is not correct');
-      //   error.statusCode = 400;
-      //   return next(error);
-      // }
       next(err);
     });
 };

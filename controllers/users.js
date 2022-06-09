@@ -8,7 +8,6 @@ const login = (req, res, next) => {
     .then((user) => {
       if (!user) {
         const err = new Error('Email or password are not correct');
-        // err.statusCode = 400;
         err.statusCode = 401;
         throw err;
       }
@@ -46,15 +45,8 @@ const getUserProfile = (req, res, next) => {
       next(err);
     });
 };
-// const userIdValidation = (value, helpers) => {
-//   // Throw an error (will be replaced with 'any.custom' error)
-//   if (value === '1') {
-//       throw new Error('nope');
-//   }
-// }
 
 const getUser = (req, res, next) => {
-  // console.log("req=>", req)
   User.findById(req.params.id)
     .then((user) => {
       if (!user) {
@@ -71,21 +63,11 @@ const getUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      // должен валидировать джой
-      // if (err.kind === 'ObjectId') {
-      //   const error = new Error('Id is not correct');
-      //   error.statusCode = 400;
-      //   return next(error);
-      // }
-      // next(err);
       next(err);
     });
 };
 
 const createUser = (req, res, next) => {
-  // const {
-  //   name, about, avatar, email, password,
-  // } = req.body;
   const {
     name: username,
     about: userProf,
@@ -93,7 +75,6 @@ const createUser = (req, res, next) => {
     email: userEmail,
     password: userPassword,
   } = req.body;
-  // if (!email || !password) {
   if (!userEmail || !userPassword) {
     const err = new Error('Email and password are required');
     err.statusCode = 400;
@@ -108,22 +89,7 @@ const createUser = (req, res, next) => {
         email: userEmail,
         password: hash,
       })
-// bcrypt.hash(password, 10)
-//   .then((hash) => {
-//     User.create({
-//       name,
-//       about,
-//       avatar,
-//       email,
-//       password: hash,
-//     })
-        // .then((user) => {
-        //   return res.status(201).send(user);
-        // })
-        // .then(() => { throw new Error() })
-        // .then((user) => res.status(201).send(user))
         .then((user) => {
-          // const { name, email, about, avatar, _id, __v } = user;
           const {
             _id, __v, name, email, about, avatar,
           } = user;
