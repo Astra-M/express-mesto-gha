@@ -18,15 +18,15 @@ const getCards = (req, res, next) => {
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user.id;
-  console.log('name=>', name)
-  console.log('link=>', link)
-  console.log('owner=>', owner)
+  // console.log('name=>', name)
+  // console.log('link=>', link)
+  // console.log('owner=>', owner)
   Card.create({ name, link, owner })
-    // .then((card) => res.status(201).send(card))
-    .then((card) => {
-      console.log('card=>', card)
-      return res.status(201).send(card)
-    })
+    .then((card) => res.status(201).send(card))
+    // .then((card) => {
+    //   // console.log('card=>', card)
+    //   return res.status(201).send(card)
+    // })
     .catch((err) => {
       next(err);
     });
