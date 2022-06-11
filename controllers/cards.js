@@ -21,6 +21,11 @@ const createCard = (req, res, next) => {
   Card.create({ name, link, owner })
     .then((card) => res.status(201).send(card))
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        const error = new Error('Name or link are not correct');
+        error.statusCode = 400;
+        next(error);
+      }
       next(err);
     });
 };
@@ -39,7 +44,7 @@ const deleteCard = (req, res, next) => {
         err.statusCode = 403;
         throw err;
       }
-      Card.findByIdAndRemove(req.params.cardId)
+      return Card.findByIdAndRemove(req.params.cardId)
         .then(() => res.status(200).send({ message: 'Card has been deleted' }));
     })
     .catch((err) => {

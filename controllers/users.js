@@ -75,11 +75,6 @@ const createUser = (req, res, next) => {
     email: userEmail,
     password: userPassword,
   } = req.body;
-  if (!userEmail || !userPassword) {
-    const err = new Error('Email and password are required');
-    err.statusCode = 400;
-    throw err;
-  }
   bcrypt.hash(userPassword, 10)
     .then((hash) => {
       User.create({
@@ -98,8 +93,12 @@ const createUser = (req, res, next) => {
             name, email, about, avatar, _id, __v,
           });
         })
-
         .catch((e) => {
+          if (e.name === 'ValidationError') {
+            const error = new Error('Some of the fields are not correct');
+            error.statusCode = 400;
+            return next(error);
+          }
           if (e.code === 11000) {
             const duplicateError = new Error('This email already exists');
             duplicateError.statusCode = 409;
@@ -107,7 +106,8 @@ const createUser = (req, res, next) => {
           }
           return next(e);
         });
-    });
+    })
+    .catch((err) => next(err));
 };
 
 const updateUserProfile = (req, res, next) => {
