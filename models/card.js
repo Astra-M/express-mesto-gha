@@ -15,16 +15,6 @@ const cardSchema = new mongoose.Schema({
       validator: (value) => validator.isURL(value, { protocols: ['http', 'https', 'ftp'], require_tld: true, require_protocol: true }),
       message: 'Must be a valid URL',
     },
-
-    // validate: validators.isURL({message: 'Must be a Valid URL',
-    // protocols: ['http','https','ftp'],
-    // require_tld: true,
-    // require_protocol: true })
-
-    // validator: [validator.isURL({
-    //   message: 'Must be a valid URL',
-    //   protocols: ['http', 'https', 'ftp'],
-    // })],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -36,7 +26,6 @@ const cardSchema = new mongoose.Schema({
     ref: 'user',
     default: [],
   }],
-
   createdAt: {
     type: Date,
     default: Date.now,

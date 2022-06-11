@@ -27,10 +27,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: [validator.isEmail, 'Must be a valid email'],
-    // validate: {
-    //   validator: (value) => validator.isEmail(value, { protocols: ['http', 'https', 'ftp'], require_tld: true, require_protocol: true }),
-    //   message: 'Must be a valid URL',
-    // },
   },
   password: {
     type: String,

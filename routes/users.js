@@ -27,14 +27,6 @@ userRouter.patch('/me', celebrate({
 
 userRouter.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    // link: Joi.string().required().custom((value, helpers) => {
-    //   if (validator.isURL(value)) {
-    //     return value;
-    //   }
-    //   return helpers.message('URL is not valid');
-    // }),
-
-    // avatar: Joi.string().pattern(/(https?:\/\/)(w{3}\.)?[A-z0-9.-]+[.A-z][/\w]*[.A-z]*#?/),
     avatar: Joi.string().custom((value, helpers) => {
       if (validator.isURL(value)) {
         return value;

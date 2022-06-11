@@ -97,7 +97,7 @@ const createUser = (req, res, next) => {
           if (e.name === 'ValidationError') {
             const error = new Error('Some of the fields are not correct');
             error.statusCode = 400;
-            return next(error);
+            throw error;
           }
           if (e.code === 11000) {
             const duplicateError = new Error('This email already exists');

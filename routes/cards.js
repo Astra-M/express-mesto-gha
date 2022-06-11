@@ -4,7 +4,6 @@ const { celebrate, Joi } = require('celebrate');
 const {
   getCards, createCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
-// const { validateUserEmail, validateCardLink } = require('../middlewares/auth');
 
 cardRouter.get('/', getCards);
 
@@ -17,7 +16,6 @@ cardRouter.delete('/:cardId', celebrate({
 cardRouter.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    // link: Joi.string().required().pattern(/(https?:\/\/)(w{3}\.)?[A-z0-9.-]+[.A-z][/\w]*[.A-z]*#?/),
     link: Joi.string().required().custom((value, helpers) => {
       if (validator.isURL(value)) {
         return value;

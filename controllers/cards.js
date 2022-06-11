@@ -24,7 +24,7 @@ const createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         const error = new Error('Name or link are not correct');
         error.statusCode = 400;
-        next(error);
+        throw error;
       }
       next(err);
     });

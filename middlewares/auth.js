@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-// const validator = require('validator');
 
 const generateToken = (payload) => jwt.sign(payload, 'some-secret-key', { expiresIn: '7d' });
 
@@ -22,33 +21,5 @@ const isAuthorized = (req, res, next) => {
   req.user = payload;
   return next();
 };
-
-// const validateUserEmail = (req, res, next) => {
-//   const { email } = req.body;
-//   if (validator.isEmail(email)) {
-//     return next();
-//   }
-//   const err = new Error('Email is not correct');
-//   err.statusCode = 400;
-//   return next(err);
-// };
-
-// const validateCardLink = (req, res, next) => {
-//   const { link } = req.body;
-//   if (validator.isURL(link)) {
-//     return next();
-//   }
-//   const err = new Error('Link is not correct');
-//   err.statusCode = 400;
-//   return next(err);
-// };
-
-
-// const validateCardLink = (value) => {
-//   if (!validator.isURL(value, { require_protocol: true })) {
-//     throw new Error('Неправильный формат ссылки');
-//   }
-//   return value;
-// };
 
 module.exports = { generateToken, isAuthorized };
