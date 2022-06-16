@@ -5,7 +5,7 @@ const generateToken = (payload) => jwt.sign(payload, 'some-secret-key', { expire
 const isAuthorized = (req, res, next) => {
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith('Bearer ')) {
-    const err = new Error('Authorization error');
+    const err = new Error('Authorization error: try again');
     err.statusCode = 401;
     throw err;
   }
